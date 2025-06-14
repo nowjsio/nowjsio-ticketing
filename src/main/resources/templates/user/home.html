@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Home | Ticketing</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div th:if="${principal != null}">
+    <p th:text="'안녕하세요, ' + ${principal.name} + '님!'"></p>
+    <p><a th:href="@{/logout}">로그아웃</a></p>
+    <button type="button" onclick="window.open('/booking','_blank')">예매하기</button>
+</div>
+
+<div th:if="${principal == null}">
+    <h2>환영합니다!</h2>
+    <p><a th:href="@{/login}">로그인</a> 또는 <a th:href="@{/signup}">회원가입</a> 해주세요.</p>
+</div>
+</body>
+</html>
