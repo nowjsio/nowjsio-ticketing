@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+
+    <springProperty name="dbUrl"      source="spring.datasource.url"/>
+    <springProperty name="dbUser"     source="spring.datasource.username"/>
+    <springProperty name="dbPassword" source="spring.datasource.password"/>
+
+    <!-- 1) 콘솔 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 2) 파일(롤링) -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/app.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 매일 새로운 파일, 30일 보관 -->
+            <fileNamePattern>logs/app.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 3) DB -->
+    <appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+        <connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
+            <dataSource class="com.zaxxer.hikari.HikariDataSource">
+                <driverClassName>com.mysql.cj.jdbc.Driver</driverClassName>
+                <jdbcUrl>${dbUrl}</jdbcUrl>
+                <username>${dbUser}</username>
+                <password>${dbPassword}</password>
+            </dataSource>
+        </connectionSource>
+    </appender>
+
+    <!-- 4) Logstash → ELK (TCP JSON) -->
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>localhost:4999</destination>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp>
+                    <timeZone>Asia/Seoul</timeZone>
+                </timestamp>
+                <pattern>
+                    <pattern>
+                        { "app":"ticketing" }
+                    </pattern>
+                </pattern>
+                <logLevel />
+                <loggerName />
+                <threadName />
+                <message />
+                <stackTrace />
+                <mdc />
+            </providers>
+        </encoder>
+    </appender>
+
+    <!-- 루트 로거 -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+        <appender-ref ref="DB" />
+        <appender-ref ref="LOGSTASH" />
+    </root>
+
+</configuration>

@@ -11,15 +11,18 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.ui.Model;
 
+import lombok.extern.slf4j.Slf4j;
 import nowjsio.ticketing.domain.user.dto.UserRequestDto;
 import nowjsio.ticketing.domain.user.exception.DuplicateUsernameException;
 
+@Slf4j
 @ControllerAdvice(annotations = Controller.class)
 public class WebExceptionHandler {
 
 	@ExceptionHandler(DuplicateUsernameException.class)
 	public String handleDup(DuplicateUsernameException ex,
 		Model model) {
+		log.error("Error duplicate username", ex);
 		model.addAttribute("userRequestDto", new UserRequestDto());
 		model.addAttribute("signupError", ex.getMessage());
 		return "user/signup";
