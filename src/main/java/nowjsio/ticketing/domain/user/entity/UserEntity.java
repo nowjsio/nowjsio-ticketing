@@ -1,8 +1,11 @@
 package nowjsio.ticketing.domain.user.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.*;
+import nowjsio.ticketing.domain.common.entity.BaseEntity;
 
 @Entity
 @Getter
@@ -11,7 +14,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "users")
-public class UserEntity {
+public class UserEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
