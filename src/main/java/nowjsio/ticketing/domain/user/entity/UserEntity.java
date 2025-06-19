@@ -1,5 +1,6 @@
 package nowjsio.ticketing.domain.user.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -34,9 +35,11 @@ public class UserEntity extends BaseEntity {
 	//@Enumerated(EnumType.ORDINAL) -> 0 || 1  저장
 	private UserRoleType role;
 
+	@Builder.Default
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<ReservationEntity> reservations;
+	private List<ReservationEntity> reservations = new ArrayList<>();
 
+	@Builder.Default
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<PaymentEntity> payments;
+	private List<PaymentEntity> payments = new ArrayList<>();
 }
