@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import nowjsio.ticketing.domain.booking.event.entity.EventEntity;
 import nowjsio.ticketing.domain.booking.seat.entity.SeatEntity;
+import nowjsio.ticketing.domain.booking.section.entity.SectionEntity;
 import nowjsio.ticketing.domain.common.entity.BaseEntity;
 
 import java.math.BigDecimal;
@@ -27,6 +28,10 @@ public class SectionPriceEntity extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "seat_id", nullable = false)
 	private SeatEntity seat;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "section_id", nullable = false)
+	private SectionEntity section;
 
 	@Column(nullable = false, precision = 10, scale = 2)
 	private BigDecimal price;
