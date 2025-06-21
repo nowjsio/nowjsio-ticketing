@@ -12,7 +12,7 @@ public interface AuditLogService {
 		String entityId,
 		String previousData,
 		String newData,
-		Long userId,
+		String userName,
 		String ip,
 		String userAgent,
 		String description

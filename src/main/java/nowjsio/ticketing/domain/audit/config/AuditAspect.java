@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import nowjsio.ticketing.domain.audit.entity.ActionType;
 import nowjsio.ticketing.domain.audit.service.AuditLogService;
@@ -41,7 +42,7 @@ public class AuditAspect {
 			entityId,
 			/*previousData=*/ null,
 			/*newData=*/ newData,
-			getCurrentUserId(),
+			getUserName(),
 			getClientIp(),
 			getUserAgent(),
 			auditable.description()
@@ -64,7 +65,7 @@ public class AuditAspect {
 			/*entityId=*/ null,
 			/*previousData=*/ null,
 			/*newData=*/ null,
-			getCurrentUserId(),
+			getUserName(),
 			getClientIp(),
 			getUserAgent(),
 			desc
@@ -100,10 +101,10 @@ public class AuditAspect {
 		}
 	}
 
-	private Long getCurrentUserId() {
+	private String getUserName() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth != null && auth.getPrincipal() instanceof CustomUserDetails) {
-			return ((CustomUserDetails) auth.getPrincipal()).getId();
+		if (auth != null && auth.getPrincipal() instanceof UserDetails) {
+			return ((UserDetails) auth.getPrincipal()).getUsername();
 		}
 		return null;
 	}
