@@ -17,7 +17,7 @@ public class AuditLogDto {
 	private String entityId;
 	private String previousData;
 	private String newData;
-	private Long userId;
+	private String userName;
 	private String ipAddress;
 	private String userAgent;
 	private String description;
@@ -31,7 +31,7 @@ public class AuditLogDto {
 			.entityId(e.getEntityId())
 			.previousData(e.getPreviousData())
 			.newData(e.getNewData())
-			.userId(e.getUserId())
+			.userName(e.getUserName())
 			.ipAddress(e.getIpAddress())
 			.userAgent(e.getUserAgent())
 			.description(e.getDescription())

@@ -26,7 +26,7 @@ public class AuditLogServiceImpl implements AuditLogService {
 		String entityId,
 		String previousData,
 		String newData,
-		Long userId,
+		String userName,
 		String ip,
 		String userAgent,
 		String description) {
@@ -36,7 +36,7 @@ public class AuditLogServiceImpl implements AuditLogService {
 			.entityId(entityId)
 			.previousData(previousData)
 			.newData(newData)
-			.userId(userId)
+			.userName(userName)
 			.ipAddress(ip)
 			.userAgent(userAgent)
 			.description(description)

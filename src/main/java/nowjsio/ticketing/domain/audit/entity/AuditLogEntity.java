@@ -32,8 +32,8 @@ public class AuditLogEntity extends BaseEntity {
 	@Column(columnDefinition = "TEXT")
 	private String newData;
 
-	@Column(name = "user_id")
-	private Long userId;
+	@Column(name = "user_name")
+	private String userName;
 
 	@Column(length = 45)
 	private String ipAddress;
