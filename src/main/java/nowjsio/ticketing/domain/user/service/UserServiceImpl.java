@@ -1,7 +1,10 @@
 package nowjsio.ticketing.domain.user.service;
 
+import java.util.List;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import nowjsio.ticketing.domain.user.dto.UserRequestDto;
@@ -34,5 +37,16 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean existsByUsername(String username) {
 		return userRepository.existsByUsername(username);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<UserResponseDto> findAllUsers() {
+		return userRepository.findAll().stream()
+			.map(p -> UserResponseDto.builder()
+				.username(p.getUsername())
+				.point(p.getPoint())
+				.build())
+			.toList();
 	}
 }

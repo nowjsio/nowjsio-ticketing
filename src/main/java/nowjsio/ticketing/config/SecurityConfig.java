@@ -44,8 +44,12 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
 		http
-			.csrf(csrf -> csrf.ignoringRequestMatchers(PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.POST,"/actuator/shutdown")))
-			.authorizeHttpRequests(auth -> auth.requestMatchers("/actuator/**")
+			.csrf(csrf -> csrf.ignoringRequestMatchers(
+				PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.POST, "/actuator/shutdown")))
+			.authorizeHttpRequests(auth -> auth
+				.requestMatchers("/actuator/**", "/v3/api-docs/**",
+					"/swagger-ui.html",
+					"/swagger-ui/**", "/admin/**")
 				.hasRole("ADMIN")
 				.requestMatchers("/", "/login", "/signup", "/css/**", "/js/**")
 				.permitAll()
