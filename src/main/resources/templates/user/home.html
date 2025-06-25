@@ -8,7 +8,14 @@
 <body>
 <div th:if="${principal != null}">
     <p th:text="'안녕하세요, ' + ${principal.name} + '님!'"></p>
-    <p><a th:href="@{/logout}">로그아웃</a></p>
+    <form th:action="@{/logout}" method="post" style="display:inline;">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <!-- 스타일은 필요에 따라 수정 -->
+        <button type="submit">
+            로그아웃
+        </button>
+    </form>
+
     <button type="button" onclick="window.open('/booking','_blank')">예매하기</button>
 </div>
 
