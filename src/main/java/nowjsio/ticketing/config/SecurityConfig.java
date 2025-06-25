@@ -5,7 +5,7 @@ import nowjsio.ticketing.domain.user.repository.UserRepository;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,8 +14,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @RequiredArgsConstructor
@@ -40,24 +38,39 @@ public class SecurityConfig {
 			.orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 	}
 
+	// 1) actuator 용 체인 (Order 1)
 	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
+	@Order(1)
+	public SecurityFilterChain actuatorSecurity(HttpSecurity http) throws Exception {
 		http
-			.csrf(csrf -> csrf.ignoringRequestMatchers(
-				PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.POST, "/actuator/shutdown")))
+			.securityMatcher("/actuator/**")
 			.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/actuator/**", "/v3/api-docs/**",
-					"/swagger-ui.html",
-					"/swagger-ui/**", "/admin/**")
-				.hasRole("ADMIN")
+				.anyRequest().hasRole("ADMIN")
+			)
+			.httpBasic(Customizer.withDefaults())
+			.csrf(csrf -> csrf.disable());  // actuator POST는 CSRF 무시하거나 disable
+		return http.build();
+	}
+
+	// 2) 웹(폼 로그인)용 체인 (Order 2)
+	@Bean
+	@Order(2)
+	public SecurityFilterChain webSecurity(HttpSecurity http) throws Exception {
+		http
+			.authorizeHttpRequests(auth -> auth
 				.requestMatchers("/", "/login", "/signup", "/css/**", "/js/**")
 				.permitAll()
-				.anyRequest()
-				.authenticated())
-			.httpBasic(Customizer.withDefaults())
-			.formLogin(form -> form.loginPage("/login").defaultSuccessUrl("/", true).permitAll())
-			.logout(logout -> logout.logoutSuccessUrl("/").permitAll()
+				.anyRequest().authenticated()
+			)
+			.formLogin(form -> form
+				.loginPage("/login")
+				.defaultSuccessUrl("/", true)
+				.permitAll()
+			)
+			.logout(logout -> logout
+				.logoutUrl("/logout")
+				.logoutSuccessUrl("/login?logout")
+				.permitAll()
 			);
 		return http.build();
 	}
